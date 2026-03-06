@@ -1,7 +1,9 @@
 # NLP-User-Sentiment-Analysis
 
 📌 Project Summary
+Utilize Sentiment Analysis to classify user sentiment from hotel reviews as positive, negative, or neutral. 
 
+This project might expand to compare sentiment analysis across different hotels that are located in the same area.
 
 
 🔧 Technologies & Tools
