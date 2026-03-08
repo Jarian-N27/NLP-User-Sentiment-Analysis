@@ -1,17 +1,21 @@
 # NLP-User-Sentiment-Analysis
 
 📌 Project Summary
-Utilize Sentiment Analysis to classify user sentiment from hotel reviews as positive, negative, or neutral. 
+Utilize Natural Language Processing for Sentiment Analysis to classify user sentiment from hotel reviews as positive, negative, or neutral. 
 
 This project might expand to compare sentiment analysis across different hotels that are located in the same area.
 
-
 🔧 Technologies & Tools
+- Python
+- Pandas (for EDA)
+- NLTK
 
+Information Sources
+- Hyatt Regency Grand Reserve Site
 
 
 🚀 Project Goals
-
+Accurately classify hotel reviews into pertaining categories utilizing HuggingFace Transformers
 
 🤖 Transformer Approach | Hugging Face Transformers
 🔄 Data Preprocessing
