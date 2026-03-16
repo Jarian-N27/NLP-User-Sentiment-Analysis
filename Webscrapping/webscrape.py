@@ -4,6 +4,8 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 import pandas as pd
 
@@ -35,27 +37,70 @@ driver.get(URL)
 print(driver.title)
 
 
-# Click read more, and load more button to avoid truncated text data
+# # Click read more, and load more button to avoid truncated text data
+# read_more_butt = driver.find_elements(By.XPATH, '//button[.//span[text()="Read more"]]')
+# for button in read_more_butt:
+#     try:
+#         driver.execute_script("arguments[0].click();", button)
+#         time.sleep(random.uniform(1,3))
+#     except:
+#         pass
 
+# # Click on next page
+# next_page_butt = driver.find_element(By.XPATH, '//a[@aria-label="Next page"]')
+# try:
+#     driver.execute_script("arguments[0].click();", button)
+#     time.sleep(random.uniform(1,3))
+# except:
+#     pass
 
-# Extract review data: review, rating, date
+#Initiate list to store data
+MAX_REVIEWS = 150
 review_data = []
-reviews = driver.find_elements(By.CSS_SELECTOR, ".ryPjd") 
 
-for review in reviews:
-    review_text = review.find_element(By.CSS_SELECTOR, ".biGQs._P.VImYz.AWdfh").text
-    rating = review.find_element(By.CSS_SELECTOR, ".GDWaad").text # Change
-    date = review.find_element(By.CSS_SELECTOR, ".iUtr1.CQYfx").text #change
-    date_of_stay = review.find_element(By.CSS_SELECTOR, ).text # change
-    trip_type = review.find_element(By.CSS_SELECTOR, ).text # change
+while True:
+    # Click read more, and load more button to avoid truncated text data
+    read_more_butt = driver.find_elements(By.XPATH, '//button[.//span[text()="Read more"]]')
+    for button in read_more_butt:
+        try:
+            driver.execute_script("arguments[0].click();", button)
+            time.sleep(random.uniform(1,3))
+        except:
+            pass
 
-    review_data.append({
-        "review": review_text,
-        "rating": rating,
-        "date": date,
-        "date of stay": date_of_stay,
-        "trip type" : trip_type
-    })
+    # Extract review data: review, rating, date
+    reviews = WebDriverWait(driver, 20).until(
+        EC.presence_of_all_elements_located((By.CSS_SELECTOR, ".ryPjd"))
+    )
+
+    for review in reviews[:5]:
+        review_text = review.find_element(By.CSS_SELECTOR, ".biGQs._P.VImYz.AWdfh").text
+        rating = review.find_element(By.CSS_SELECTOR, "svg.evwcZ title").get_attribute("innerHTML")
+        date = review.find_element(By.CSS_SELECTOR, ".RUZll").text
+        date_of_stay = review.find_element(By.CSS_SELECTOR,".biGQs._P.VImYz.xENVe").text
+        trip_type = review.find_element(By.CSS_SELECTOR, ".biGQs._P.VImYz.xENVe").text
+
+        review_data.append({
+            "review": review_text,
+            "rating": rating,
+            "date": date,
+            "date of stay": date_of_stay,
+            "trip type" : trip_type
+        })
+
+        if len(review_data) >= MAX_REVIEWS:
+            break
+
+    if len(review_data) >= MAX_REVIEWS:
+        break
+
+    # Click on next page
+    try:
+        next_page_butt = driver.find_element(By.XPATH, '//a[@aria-label="Next page"]')
+        driver.execute_script("arguments[0].click();", button)
+        time.sleep(random.uniform(1,3))
+    except:
+        break
 
 print("Finished scrapping")
 print(review_data[:5])
@@ -64,14 +109,6 @@ print(f"Total of reviews scrapped: {len(review_data)}")
 # Quit driver
 driver.quit()
 
-# Create dataframe
-# goog_hotel_reviews = pd.DataFrame(review_data)
-# print(goog_hotel_reviews.head())
+# Trip Advisor Hyatt website dataframe
+review_df = pd.DataFrame(review_data).to_csv("Trip_Advisor_Hyatt_Data.csv", index=False)
 
-# goog_hotel_reviews.to_csv("Hyatt_Hotel_Review_Data.csv", index=False)
-
-# Hyatt Main website dataframe
-hyatt_hotel_reviews = pd.DataFrame(review_data)
-print(hyatt_hotel_reviews.head())
-
-hyatt_hotel_reviews.to_csv("Hyatt_Site_Hotel_Review_Data.csv", index=False)
