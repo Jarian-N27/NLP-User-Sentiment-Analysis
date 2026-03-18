@@ -26,6 +26,11 @@ Accurately classify hotel reviews into pertaining categories utilizing HuggingFa
 
 🏗 Model Building
 
+    Test and comapare 3 different HuggingFace models
+    - BERT
+    -DistilBert
+    -RoBERTa
+    
     Selected DistilBERT, a lightweight Transformer model, due to its balance between performance and efficiency.
     Fine-tuned the pre-trained model on our sentiment classification dataset.
     Implemented training with PyTorch.
